@@ -1,1 +1,3 @@
-export const grpahCMSImageLoader = ({ src }) => src;
+export const graphCMSImageLoader = ({ src }) => {
+  return src;
+};
