@@ -1,7 +1,9 @@
-import { request, gql } from 'graphql-request';
+import { request, gql } from 'graphql-request';  // Importing the necessary functions for making GraphQL requests
 
+// Defining the GraphQL API endpoint URL, typically fetched from environment variables for better security
 const graphqlAPI = process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT;
 
+// Fetching all posts from the GraphCMS API
 export const fetchPosts = async () => {
   const query = gql`
     query GetPosts {
@@ -37,6 +39,7 @@ export const fetchPosts = async () => {
   return postsConnection.edges;
 };
 
+// Fetching all categories available in the system
 export const fetchCategories = async () => {
   const query = gql`
     query GetCategories {
@@ -50,6 +53,7 @@ export const fetchCategories = async () => {
   return categories;
 };
 
+// Fetching detailed information of a single post based on its slug
 export const fetchPostDetails = async (slug) => {
   const query = gql`
     query GetPostDetails($slug: String!) {
@@ -82,6 +86,7 @@ export const fetchPostDetails = async (slug) => {
   return post;
 };
 
+// Fetching similar posts based on shared categories and excluding the current post by slug
 export const fetchSimilarPosts = async (categories, slug) => {
   const query = gql`
     query GetSimilarPosts($slug: String!, $categories: [String!]) {
@@ -105,6 +110,7 @@ export const fetchSimilarPosts = async (categories, slug) => {
   return posts;
 };
 
+// Fetching adjacent posts (next and previous) based on the creation date and excluding the current post
 export const fetchAdjacentPosts = async (createdAt, slug) => {
   const query = gql`
     query GetAdjacentPosts($createdAt: DateTime!, $slug: String!) {
@@ -138,6 +144,7 @@ export const fetchAdjacentPosts = async (createdAt, slug) => {
   return { next: next[0], previous: previous[0] };
 };
 
+// Fetching posts for a specific category based on its slug
 export const fetchCategoryPosts = async (slug) => {
   const query = gql`
     query GetCategoryPosts($slug: String!) {
@@ -173,6 +180,7 @@ export const fetchCategoryPosts = async (slug) => {
   return postsConnection.edges;
 };
 
+// Fetching featured posts marked as "featuredPost" from the GraphCMS API
 export const fetchFeaturedPosts = async () => {
   const query = gql`
     query GetFeaturedPosts {
@@ -196,6 +204,7 @@ export const fetchFeaturedPosts = async () => {
   return posts;
 };
 
+// Submitting a comment to the backend API
 export const postComment = async (commentData) => {
   const response = await fetch('/api/comments', {
     method: 'POST',
@@ -207,6 +216,7 @@ export const postComment = async (commentData) => {
   return response.json();
 };
 
+// Fetching comments associated with a specific post based on its slug
 export const fetchComments = async (slug) => {
   const query = gql`
     query GetComments($slug: String!) {
@@ -221,6 +231,7 @@ export const fetchComments = async (slug) => {
   return comments;
 };
 
+// Fetching the most recent posts ordered by creation date
 export const fetchRecentPosts = async () => {
   const query = gql`
     query GetRecentPosts {
