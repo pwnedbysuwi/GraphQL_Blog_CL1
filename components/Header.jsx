@@ -1,32 +1,48 @@
 import React, { useState, useEffect } from 'react';
-
 import Link from 'next/link';
 import { getCategories } from '../services';
 
 const Header = () => {
   const [categories, setCategories] = useState([]);
 
+  // Fetch categories when the component mounts
   useEffect(() => {
-    getCategories().then((newCategories) => {
-      setCategories(newCategories);
-    });
+    const fetchCategories = async () => {
+      try {
+        const retrievedCategories = await getCategories();
+        setCategories(retrievedCategories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   return (
-    <div className="container mx-auto px-10 mb-8">
-      <div className="border-b w-full inline-block border-blue-400 py-8">
-        <div className="md:float-left block">
-          <Link href="/">
-            <span className="cursor-pointer font-bold text-4xl text-white">Graph CMS</span>
+    <header className="container mx-auto px-10 mb-8">
+      <div className="inline-block w-full border-b border-blue-400 py-8">
+        {/* Website Title / Logo */}
+        <div className="block md:float-left">
+          <Link href="/" passHref>
+            <span className="text-4xl font-bold text-white cursor-pointer">
+              Graph CMS
+            </span>
           </Link>
         </div>
-        <div className="hidden md:float-left md:contents">
-          {categories.map((category, index) => (
-            <Link key={index} href={`/category/${category.slug}`}><span className="md:float-right mt-2 align-middle text-white ml-4 font-semibold cursor-pointer">{category.name}</span></Link>
+
+        {/* Navigation Links */}
+        <nav className="hidden md:contents md:float-left">
+          {categories.map((category) => (
+            <Link key={category.slug} href={`/category/${category.slug}`} passHref>
+              <span className="mt-2 ml-4 font-semibold text-white cursor-pointer md:float-right align-middle hover:text-blue-200 transition-colors duration-200">
+                {category.name}
+              </span>
+            </Link>
           ))}
-        </div>
+        </nav>
       </div>
-    </div>
+    </header>
   );
 };
 
