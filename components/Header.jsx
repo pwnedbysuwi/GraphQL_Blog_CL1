@@ -5,23 +5,23 @@ import { getCategories } from '../services';
 const Header = () => {
   const [categories, setCategories] = useState([]);
 
-  // Fetch categories when the component mounts
+  // Fetch categories on component mount
   useEffect(() => {
-    const fetchCategories = async () => {
+    const loadCategories = async () => {
       try {
-        const retrievedCategories = await getCategories();
-        setCategories(retrievedCategories);
+        const fetchedCategories = await getCategories();
+        setCategories(fetchedCategories);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error('Failed to fetch categories:', error);
       }
     };
 
-    fetchCategories();
+    loadCategories();
   }, []);
 
   return (
     <header className="container mx-auto px-10 mb-8">
-      <div className="inline-block w-full border-b border-blue-400 py-8">
+      <div className="w-full border-b border-blue-400 py-8 inline-block">
         {/* Website Title / Logo */}
         <div className="block md:float-left">
           <Link href="/" passHref>
@@ -32,7 +32,7 @@ const Header = () => {
         </div>
 
         {/* Navigation Links */}
-        <nav className="hidden md:contents md:float-left">
+        <nav className="hidden md:flex md:float-left">
           {categories.map((category) => (
             <Link key={category.slug} href={`/category/${category.slug}`} passHref>
               <span className="mt-2 ml-4 font-semibold text-white cursor-pointer md:float-right align-middle hover:text-blue-200 transition-colors duration-200">
