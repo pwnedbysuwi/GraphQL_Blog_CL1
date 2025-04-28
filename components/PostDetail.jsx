@@ -2,30 +2,37 @@ import React from 'react';
 import moment from 'moment';
 
 const PostDetail = ({ post }) => {
+  // Helper function to render content fragments with styling
   const renderContentFragment = (index, text, obj, type) => {
-    let formattedText = text;
+    let styledText = text;
 
-    // Apply text styles if present
+    // Apply bold, italic, or underline styles if provided
     if (obj) {
-      if (obj.bold) {
-        formattedText = (<b key={index}>{text}</b>);
-      }
-      if (obj.italic) {
-        formattedText = (<em key={index}>{text}</em>);
-      }
-      if (obj.underline) {
-        formattedText = (<u key={index}>{text}</u>);
-      }
+      if (obj.bold) styledText = <b key={index}>{text}</b>;
+      if (obj.italic) styledText = <em key={index}>{text}</em>;
+      if (obj.underline) styledText = <u key={index}>{text}</u>;
     }
 
-    // Return content based on type
+    // Render the appropriate element based on content type
     switch (type) {
       case 'heading-three':
-        return <h3 key={index} className="text-xl font-semibold mb-4">{formattedText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}</h3>;
+        return (
+          <h3 key={index} className="text-xl font-semibold mb-4">
+            {styledText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}
+          </h3>
+        );
       case 'paragraph':
-        return <p key={index} className="mb-8">{formattedText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}</p>;
+        return (
+          <p key={index} className="mb-8">
+            {styledText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}
+          </p>
+        );
       case 'heading-four':
-        return <h4 key={index} className="text-md font-semibold mb-4">{formattedText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}</h4>;
+        return (
+          <h4 key={index} className="text-md font-semibold mb-4">
+            {styledText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}
+          </h4>
+        );
       case 'image':
         return (
           <img
@@ -37,23 +44,23 @@ const PostDetail = ({ post }) => {
           />
         );
       default:
-        return formattedText;
+        return styledText;
     }
   };
 
   return (
     <>
       <div className="bg-white shadow-lg rounded-lg lg:p-8 pb-12 mb-8">
-        {/* Featured Image */}
+        {/* Featured Image Section */}
         <div className="relative overflow-hidden shadow-md mb-6">
           <img
             src={post.featuredImage.url}
-            alt=""
+            alt="Featured Image"
             className="object-top h-full w-full object-cover shadow-lg rounded-t-lg lg:rounded-lg"
           />
         </div>
 
-        {/* Post Details */}
+        {/* Post Content Section */}
         <div className="px-4 lg:px-0">
           {/* Author and Date */}
           <div className="flex items-center mb-8 w-full">
@@ -78,11 +85,10 @@ const PostDetail = ({ post }) => {
           {/* Post Title */}
           <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1>
 
-          {/* Post Content */}
+          {/* Post Body Content */}
           {post.content.raw.children.map((typeObj, index) => {
-            const contentChildren = typeObj.children.map((item, itemIndex) => renderContentFragment(itemIndex, item.text, item));
-
-            return renderContentFragment(index, contentChildren, typeObj, typeObj.type);
+            const contentItems = typeObj.children.map((item, itemIndex) => renderContentFragment(itemIndex, item.text, item));
+            return renderContentFragment(index, contentItems, typeObj, typeObj.type);
           })}
         </div>
       </div>
