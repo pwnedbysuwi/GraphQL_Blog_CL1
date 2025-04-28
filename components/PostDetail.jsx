@@ -1,32 +1,31 @@
 import React from 'react';
-
 import moment from 'moment';
 
 const PostDetail = ({ post }) => {
-  const getContentFragment = (index, text, obj, type) => {
-    let modifiedText = text;
+  const renderContentFragment = (index, text, obj, type) => {
+    let formattedText = text;
 
+    // Apply text styles if present
     if (obj) {
       if (obj.bold) {
-        modifiedText = (<b key={index}>{text}</b>);
+        formattedText = (<b key={index}>{text}</b>);
       }
-
       if (obj.italic) {
-        modifiedText = (<em key={index}>{text}</em>);
+        formattedText = (<em key={index}>{text}</em>);
       }
-
       if (obj.underline) {
-        modifiedText = (<u key={index}>{text}</u>);
+        formattedText = (<u key={index}>{text}</u>);
       }
     }
 
+    // Return content based on type
     switch (type) {
       case 'heading-three':
-        return <h3 key={index} className="text-xl font-semibold mb-4">{modifiedText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}</h3>;
+        return <h3 key={index} className="text-xl font-semibold mb-4">{formattedText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}</h3>;
       case 'paragraph':
-        return <p key={index} className="mb-8">{modifiedText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}</p>;
+        return <p key={index} className="mb-8">{formattedText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}</p>;
       case 'heading-four':
-        return <h4 key={index} className="text-md font-semibold mb-4">{modifiedText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}</h4>;
+        return <h4 key={index} className="text-md font-semibold mb-4">{formattedText.map((item, i) => <React.Fragment key={i}>{item}</React.Fragment>)}</h4>;
       case 'image':
         return (
           <img
@@ -38,19 +37,27 @@ const PostDetail = ({ post }) => {
           />
         );
       default:
-        return modifiedText;
+        return formattedText;
     }
   };
 
   return (
     <>
       <div className="bg-white shadow-lg rounded-lg lg:p-8 pb-12 mb-8">
+        {/* Featured Image */}
         <div className="relative overflow-hidden shadow-md mb-6">
-          <img src={post.featuredImage.url} alt="" className="object-top h-full w-full object-cover  shadow-lg rounded-t-lg lg:rounded-lg" />
+          <img
+            src={post.featuredImage.url}
+            alt=""
+            className="object-top h-full w-full object-cover shadow-lg rounded-t-lg lg:rounded-lg"
+          />
         </div>
+
+        {/* Post Details */}
         <div className="px-4 lg:px-0">
+          {/* Author and Date */}
           <div className="flex items-center mb-8 w-full">
-            <div className="hidden md:flex items-center justify-center lg:mb-0 lg:w-auto mr-8 items-center">
+            <div className="hidden md:flex items-center justify-center lg:mb-0 lg:w-auto mr-8">
               <img
                 alt={post.author.name}
                 height="30px"
@@ -67,15 +74,18 @@ const PostDetail = ({ post }) => {
               <span className="align-middle">{moment(post.createdAt).format('MMM DD, YYYY')}</span>
             </div>
           </div>
-          <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1>
-          {post.content.raw.children.map((typeObj, index) => {
-            const children = typeObj.children.map((item, itemindex) => getContentFragment(itemindex, item.text, item));
 
-            return getContentFragment(index, children, typeObj, typeObj.type);
+          {/* Post Title */}
+          <h1 className="mb-8 text-3xl font-semibold">{post.title}</h1>
+
+          {/* Post Content */}
+          {post.content.raw.children.map((typeObj, index) => {
+            const contentChildren = typeObj.children.map((item, itemIndex) => renderContentFragment(itemIndex, item.text, item));
+
+            return renderContentFragment(index, contentChildren, typeObj, typeObj.type);
           })}
         </div>
       </div>
-
     </>
   );
 };
