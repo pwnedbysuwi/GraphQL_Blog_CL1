@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { getCategories, getCategoryPost } from '../../services';
 import { PostCard, Categories, Loader } from '../../components';
 
-const CategoryPost = ({ posts }) => {
+const CategoryPage = ({ posts }) => {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -14,11 +14,14 @@ const CategoryPost = ({ posts }) => {
   return (
     <div className="container mx-auto px-10 mb-8">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {/* Main posts */}
         <div className="col-span-1 lg:col-span-8">
-          {posts.map((post, index) => (
-            <PostCard key={index} post={post.node} />
+          {posts.map((post, i) => (
+            <PostCard key={i} post={post.node} />
           ))}
         </div>
+
+        {/* Sidebar */}
         <div className="col-span-1 lg:col-span-4">
           <div className="relative lg:sticky top-8">
             <Categories />
@@ -28,9 +31,12 @@ const CategoryPost = ({ posts }) => {
     </div>
   );
 };
-export default CategoryPost;
 
-// Fetch data at build time
+export default CategoryPage;
+
+/**
+ * Fetch posts for a given category (runs at build time)
+ */
 export async function getStaticProps({ params }) {
   const posts = await getCategoryPost(params.slug);
 
@@ -39,10 +45,12 @@ export async function getStaticProps({ params }) {
   };
 }
 
-// Specify dynamic routes to pre-render pages based on data.
-// The HTML is generated at build time and will be reused on each request.
+/**
+ * Define dynamic paths for category pages
+ */
 export async function getStaticPaths() {
   const categories = await getCategories();
+
   return {
     paths: categories.map(({ slug }) => ({ params: { slug } })),
     fallback: true,
